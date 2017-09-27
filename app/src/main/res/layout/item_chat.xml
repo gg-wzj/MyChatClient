@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginTop="8dp">
+
+    <TextView
+        android:id="@+id/tv_chat_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/shape_corner_gray0"
+        android:padding="3dp"
+        android:text="23:12"
+        android:textColor="#fff"
+        android:visibility="gone"/>
+
+    <LinearLayout
+        android:id="@+id/ll_chat_left"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/iv_left_header"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="10dp"
+            android:src="@mipmap/default_header" />
+
+        <TextView
+            android:id="@+id/tv_left_message"
+            android:layout_marginRight="35dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/img_bubble_receive"
+            android:gravity="center_vertical"
+            android:paddingRight="15dp"
+            android:paddingLeft="20dp"
+            android:textSize="20sp"
+            android:textColor="@color/gray0"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+
+            android:text="哈哈哈我就是这么拽不服" />
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:id="@+id/ll_chat_right"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="right"
+        android:visibility="visible">
+
+        <TextView
+            android:layout_marginLeft="90dp"
+            android:id="@+id/tv_right_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/img_bubble_send"
+            android:gravity="center_vertical"
+            android:paddingRight="15dp"
+            android:paddingLeft="15dp"
+            android:textSize="20sp"
+            android:textColor="@color/gray0"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:text="哈哈哈我就是这么拽不服来打我啊哈哈哈哈哈哈哈哈" />
+
+
+        <ImageView
+            android:id="@+id/iv_right_header"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="5dp"
+            android:src="@mipmap/default_header"
+            android:layout_alignParentRight="true"/>
+        </LinearLayout>
+        <TextView
+            android:id="@+id/tv_send_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="正在发送..."
+            android:layout_gravity="center"
+            android:textColor="#fff"
+            android:padding="3dp"
+            android:background="@drawable/shape_corner_gray0"/>
+</LinearLayout>

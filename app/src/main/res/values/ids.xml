@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="option_friendCircle" type="id"/>
+    <item name="option_shake" type="id"/>
+    <item name="option_scan" type="id"/>
+    <item name="option_around" type="id"/>
+    <item name="option_plp" type="id"/>
+    <item name="option_shop" type="id"/>
+    <item name="option_game" type="id"/>
+
+    <item name="option_money" type="id"/>
+    <item name="option_collection" type="id"/>
+    <item name="option_photo" type="id"/>
+    <item name="option_cardPack" type="id"/>
+    <item name="option_face" type="id"/>
+    <item name="option_setting" type="id"/>
+
+    <item name="option_listview" type="id"/>
+</resources>

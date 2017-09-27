@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray1">
+    <RelativeLayout
+        android:layout_marginTop="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#fff">
+        <ImageView
+            android:id="@+id/iv_me_header"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_margin="10dp"
+            android:src="@mipmap/default_header"/>
+        <TextView
+            android:id="@+id/tv_me_nick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="J."
+            android:textSize="18sp"
+            android:layout_toRightOf="@id/iv_me_header"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="15dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="微信号: weChatNumber"
+            android:layout_below="@id/tv_me_nick"
+            android:layout_toRightOf="@id/iv_me_header"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"/>
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:src="@mipmap/ic_qr_code"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_me_money"
+        style="@style/OptionParent"/>
+
+    <LinearLayout
+        android:id="@+id/ll_me_fun"
+        style="@style/OptionParent"/>
+
+    <LinearLayout
+        android:id="@+id/ll_me_setting"
+        style="@style/OptionParent"/>
+
+
+</LinearLayout>
