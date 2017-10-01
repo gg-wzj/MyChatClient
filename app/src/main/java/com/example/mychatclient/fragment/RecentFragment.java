@@ -6,19 +6,19 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.example.mychatclient.R;
 import com.example.mychatclient.activity.ChatActivity;
+import com.example.mychatclient.activity.MainActivity;
 import com.example.mychatclient.adapter.RecentMessageAdapter;
 import com.example.mychatclient.db.bean.RecentMessageBean;
 import com.example.mychatclient.db.dao.RecentMessageDao;
+import com.example.mychatclient.util.SPUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +32,7 @@ public class RecentFragment extends Fragment {
     private View rootView;
     private ListView lv_recent;
 
-    private RecentMessageDao dao = new RecentMessageDao("wzj");
+    private RecentMessageDao dao;
     private List<RecentMessageBean> mList;
 
     private RecentMessageAdapter adapter;
@@ -49,11 +49,14 @@ public class RecentFragment extends Fragment {
                     break;
                 case NOTIFYADAPTER:
                     adapter.notifyDataSetChanged();
+                    MainActivity activity = (MainActivity) getActivity();
+                    activity.changePoint(0,wdCount);
                     break;
             }
 
         }
     };
+    private int wdCount;
 
     @Nullable
     @Override
@@ -72,6 +75,8 @@ public class RecentFragment extends Fragment {
         if (mList != null)
             return;
        // moniDatas();
+        String dbName = "a_" +SPUtil.getString("user");
+        dao = new RecentMessageDao(dbName);
         mList = new ArrayList<>();
         adapter = new RecentMessageAdapter(mList);
         Message message = mHandler.obtainMessage();
@@ -81,6 +86,17 @@ public class RecentFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 RecentMessageBean bean = mList.get(position);
+
+                //更新mainActivity的tab
+                MainActivity activity = (MainActivity) getActivity();
+                wdCount = wdCount -bean.getWdCount();
+                activity.changePoint(0,wdCount);
+
+                //修改该联系人的未读消息数
+                bean.setWdCount(0);
+                dao.addMessage(bean);
+
+                //跳转到chatActivity并传递需要的信息
                 String remark = bean.getRemark();
                 String friendPhone = bean.getFriendPhone();
                 Intent intent = new Intent(getActivity(), ChatActivity.class);
@@ -110,9 +126,14 @@ public class RecentFragment extends Fragment {
     }
 
     private void updateList() {
+        //重置wdCount!!
+        wdCount=0;
         List<RecentMessageBean> list = dao.findAll();
         mList.clear();
         mList.addAll(list);
+        for (RecentMessageBean recentMessageBean : mList) {
+            wdCount += recentMessageBean.getWdCount();
+        }
         Message message = mHandler.obtainMessage();
         message.what = NOTIFYADAPTER;
         mHandler.sendMessage(message);

@@ -19,7 +19,6 @@
             android:layout_height="wrap_content"
             android:layout_alignTop="@id/iv_newfriend_header"
             android:layout_toRightOf="@id/iv_newfriend_header"
-            android:text="J."
             android:textColor="#000"
             android:textSize="18sp"
             android:layout_marginLeft="10dp"/>
@@ -29,7 +28,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_newfriend_name"
             android:layout_toRightOf="@id/iv_newfriend_header"
-            android:text="我是你同学啊"
             android:textColor="#000"
             android:textSize="18sp"
             android:layout_marginLeft="10dp"/>
@@ -38,7 +36,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:textColor="#fff"
-            android:background="@color/green"
+            android:background="@drawable/shape_corner_rect_green"
             android:text="同意"
             android:layout_alignParentRight="true"
             android:layout_marginRight="45dp"
@@ -49,7 +47,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:textColor="#fff"
-            android:background="@color/green"
+            android:background="@drawable/shape_corner_rect_green"
             android:text="拒绝"
             android:layout_alignParentRight="true"
             />

@@ -8,16 +8,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.AppBarLayout;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.mychatclient.R;
@@ -40,7 +37,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by wzj on 2017/9/21.
@@ -55,7 +51,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
     private ImageView iv_toolbar_session;
     private TextView tvToolbarTitle;
     private String friendPhone;
-    private ChatRecordDao dao = new ChatRecordDao("wzj");
+    private ChatRecordDao dao ;
 
     private List<ChatRecordBean> mList = new ArrayList<>();
     private RecyclerView rv_chat;
@@ -88,6 +84,8 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
     private EditText et_chat;
     private String remark;
     private ChatReceiver receiver;
+    private String dbName;
+    private String user;
 
     @Override
     protected void init() {
@@ -120,6 +118,11 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     protected void initDats() {
+
+        user = SPUtil.getString("user");
+
+        dbName = "a_" +user;
+        dao = new ChatRecordDao(dbName);
 
         //设置标题栏(对朋友的备注)
         Bundle extras = getIntent().getExtras();
@@ -202,7 +205,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
                 //添加到 chatRecord中
                 dao.addChatRecord(oldBean);
                 //更新recentMessage表
-                RecentMessageDao r_dao = new RecentMessageDao("wzj");
+                RecentMessageDao r_dao = new RecentMessageDao(dbName);
                 RecentMessageBean recentMessageBean = new RecentMessageBean(friendPhone,remark,oldBean.getMessage(),0,System.currentTimeMillis());
                 r_dao.addMessage(recentMessageBean);
                 updateDatas();
@@ -216,7 +219,6 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void sendToServer(String message, final ChatRecordBean oldBean) {
-        String user = SPUtil.getString("user");
         SendMessageBean sendMessageBean = new SendMessageBean(user, friendPhone, 0, message, System.currentTimeMillis());
         NetBean<SendMessageBean> netBean = new NetBean<>(TypeConstant.REQUEST_SENDMESSAGE,sendMessageBean);
         final String json = new Gson().toJson(netBean, NetBean.class);
@@ -227,7 +229,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
                     JSONObject jsonObject = new JSONObject(respond);
                     String data = jsonObject.optString("data");
                     if("ok".equals(data))//成功发送 取消正在发送的progressBar
-                        canelSendding(oldBean);
+                        updateSendStatus(oldBean,1);
                     else showFailTip();
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -237,7 +239,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
 
             @Override
             public void onFailure(Exception e) {
-
+                updateSendStatus(oldBean,2);
             }
         })).start();
     }
@@ -250,9 +252,9 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
         mHandler.sendMessage(handleMessage);
     }
 
-    private void canelSendding(ChatRecordBean oldBean) {
+    private void updateSendStatus(ChatRecordBean oldBean,int type) {
         //更新数据库的数据 重新查找 更新ui
-        dao.updateSendStatus(oldBean);
+        dao.updateSendStatus(oldBean,type);
         updateDatas();
     }
 
@@ -270,6 +272,12 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
                 if(friendPhone.equals(phone)){
                     //说明是正在聊天的朋友发的消息 更新ui
                     updateDatas();
+
+                    //将该朋友的recentMessage未读数wdCount改为0
+                    RecentMessageDao r_dao = new RecentMessageDao(dbName);
+                    RecentMessageBean bean = r_dao.findWithPhone(friendPhone);
+                    bean.setWdCount(0);
+                    r_dao.addMessage(bean);
                 }
             }
         }

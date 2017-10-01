@@ -51,7 +51,6 @@ public class OneTimeConn implements Runnable {
             BufferedReader reader = new BufferedReader(isr);
             String respond = reader.readLine();
 
-            Log.e("Wzj",respond);
 
             reader.close();
             writer.close();

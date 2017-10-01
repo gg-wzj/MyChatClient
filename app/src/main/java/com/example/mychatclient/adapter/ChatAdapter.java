@@ -59,8 +59,12 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         int hasSend = bean.getHasSend();
         if(hasSend == 1){
             holder.tv_send_status.setVisibility(View.GONE);
-        }else {
+        }else if(hasSend == 0){
             holder.tv_send_status.setVisibility(View.VISIBLE);
+        }else if(hasSend == 2){
+            //发送失败
+            holder.tv_send_status.setVisibility(View.VISIBLE);
+            holder.tv_send_status.setText("请求超时,发送失败");
         }
     }
 

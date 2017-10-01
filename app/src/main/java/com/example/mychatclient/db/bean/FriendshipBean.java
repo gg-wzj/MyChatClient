@@ -59,4 +59,15 @@ public class FriendshipBean {
     public void setSex(int sex) {
         this.sex = sex;
     }
+
+    @Override
+    public String toString() {
+        return "FriendshipBean{" +
+                "phone='" + phone + '\'' +
+                ", nick='" + nick + '\'' +
+                ", area='" + area + '\'' +
+                ", remark='" + remark + '\'' +
+                ", sex=" + sex +
+                '}';
+    }
 }

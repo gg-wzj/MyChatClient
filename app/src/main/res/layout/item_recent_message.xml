@@ -41,4 +41,15 @@
         android:textColor="@color/gray0"
         android:layout_marginTop="5dp"
         android:layout_marginLeft="20dp"/>
+    <TextView
+        android:id="@+id/tv_recent_point"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:text="5"
+        android:gravity="center"
+        android:textColor="#fff"
+        android:background="@drawable/shape_circle_red"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="5dp"
+        android:visibility="gone"/>
 </RelativeLayout>

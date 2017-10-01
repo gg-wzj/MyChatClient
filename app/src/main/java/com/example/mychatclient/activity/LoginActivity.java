@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -22,6 +23,7 @@ import com.example.mychatclient.net.bean.LoginBean;
 import com.example.mychatclient.net.bean.NetBean;
 import com.example.mychatclient.service.ChatService;
 import com.example.mychatclient.util.SPUtil;
+import com.example.mychatclient.util.StringUtil;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -33,6 +35,11 @@ import org.json.JSONObject;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
 
+    public static final String USER = "user";
+    public static final String PWD = "pwd";
+    public static final String MD5 = "md5";
+
+
     private EditText etPhone;
     private EditText etPwd;
     private Button btnLogin;
@@ -41,13 +48,22 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            Toast.makeText(LoginActivity.this,"账号或密码错误，请重新输入",Toast.LENGTH_SHORT).show();
-            etPwd.setText("");
+            progressDialog.dismiss();
+            switch (msg.what){
+                case 0:
+                    Toast.makeText(LoginActivity.this,"账号或密码错误，请重新输入",Toast.LENGTH_SHORT).show();
+                    etPwd.setText("");
+                    break;
+                case 1:
+                    break;
+            }
+
         }
     };
     private String phone;
     private String pwd;
     private ProgressDialog progressDialog;
+    private String md5;
 
     @Override
     protected void initView() {
@@ -56,6 +72,21 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         etPhone = (EditText) findViewById(R.id.etPhone);
         etPwd = (EditText) findViewById(R.id.etPwd);
         btnLogin = (Button) findViewById(R.id.btnLogin);
+
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+        if(extras!=null){
+            phone = extras.getString(USER);
+            pwd = extras.getString(PWD);
+            md5 = extras.getString(MD5);
+            etPhone.setText(phone);
+            etPwd.setText(pwd);
+        }
+
+        if(!TextUtils.isEmpty(md5)){
+            //说明是splash界面传过来的 直接登录
+            login();
+        }
     }
 
     @Override
@@ -72,17 +103,27 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             Toast.makeText(this,"账号或密码为空",Toast.LENGTH_SHORT).show();
             return;
         }
+        md5 = StringUtil.getMd5(pwd);
 
+        login();
+    }
+
+    public  void login() {
+        //显示progressDialog
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("正在登陆");
         progressDialog.setCancelable(false);
         progressDialog.show();
 
-        LoginBean bean = new LoginBean(phone, pwd);
+        SPUtil.putString("user",phone);
+        LoginBean bean = new LoginBean(phone, md5);
+
+        //获取登陆请求的json数据
         NetBean<LoginBean> netBean = new NetBean<>(TypeConstant.REQUEST_LOGIN,bean);
         Gson gson = new Gson();
         final String json = gson.toJson(netBean, NetBean.class);
 
+        //开启服务，通过服务开启长连接
         Intent intent = new Intent(this, ChatService.class);
         startService(intent);
         bindService(intent, new ServiceConnection() {
@@ -109,12 +150,16 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     //登录成功
                     Intent intent = new Intent(LoginActivity.this,MainActivity.class);
                     startActivity(intent);
-                    SPUtil.putString("user",phone);
-                    progressDialog.dismiss();
+                    SPUtil.putString("pwd",md5);
                     finish();
                 }else {
                     mHnadler.sendEmptyMessage(0);
-                    progressDialog.dismiss();
+
+                    //登陆失败 重置user缓存
+                    SPUtil.putString("user","");
+                    //关闭服务
+                    Intent intent = new Intent(LoginActivity.this,ChatService.class);
+                    stopService(intent);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

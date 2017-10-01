@@ -6,12 +6,12 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="12dp">
+        android:padding="6dp">
         <ImageView
             android:id="@+id/iv_contact_header"
             android:layout_marginLeft="10dp"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:src="@mipmap/avatar_def"
             android:layout_centerVertical="true"/>
         <TextView
@@ -20,14 +20,14 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:text="公众号"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textColor="@color/gray0"
             android:layout_toRightOf="@id/iv_contact_header"
             android:layout_marginLeft="13dp"/>
         <TextView
             android:id="@+id/tv_contact_point"
-            android:layout_width="12dp"
-            android:layout_height="12dp"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
             android:layout_alignParentRight="true"
             android:background="@drawable/shape_circle_red"
             android:layout_marginRight="20dp"

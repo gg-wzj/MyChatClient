@@ -6,10 +6,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 
 import com.example.mychatclient.R;
+import com.example.mychatclient.util.SPUtil;
 
 /**
  * Created by wzj on 2017/9/20.
@@ -26,6 +28,17 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
 
         initView();
         initListener();
+
+        String user = SPUtil.getString("user");
+        String pwd = SPUtil.getString("pwd");
+        if(!TextUtils.isEmpty(user) && !TextUtils.isEmpty(pwd)){
+            //账号 密码 均不为空 直接登录
+            Intent intent = new Intent(this,LoginActivity.class);
+            intent.putExtra(LoginActivity.USER,user);
+            intent.putExtra(LoginActivity.MD5,pwd);
+            startActivity(intent);
+            finish();
+        }
     }
 
     private void initView() {

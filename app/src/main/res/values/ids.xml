@@ -13,7 +13,7 @@
     <item name="option_photo" type="id"/>
     <item name="option_cardPack" type="id"/>
     <item name="option_face" type="id"/>
-    <item name="option_setting" type="id"/>
+    <item name="option_exit" type="id"/>
 
     <item name="option_listview" type="id"/>
 </resources>

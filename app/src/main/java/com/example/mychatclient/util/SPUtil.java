@@ -24,4 +24,19 @@ public class SPUtil {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
         return sharedPreferences.getString(key, "");
     }
+
+    public static boolean putBoolean(String key,boolean value){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
+        SharedPreferences.Editor edit = sharedPreferences.edit();
+        edit.putBoolean(key, value);
+        boolean result = edit.commit();
+        return result;
+    }
+
+    public static boolean getBoolean(String key){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
+        return sharedPreferences.getBoolean(key, false);
+    }
+
+
 }

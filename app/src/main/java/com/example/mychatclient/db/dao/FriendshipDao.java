@@ -3,6 +3,7 @@ package com.example.mychatclient.db.dao;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.example.mychatclient.app.MyApplication;
 import com.example.mychatclient.db.CurrentUserDB;
@@ -27,7 +28,11 @@ public class FriendshipDao {
     public boolean addFriendship(FriendshipBean bean){
         if(bean == null)
             return false;
+        FriendshipBean oldBean = getInfoWithPhone(bean.getPhone());
         SQLiteDatabase db = dbHelper.getWritableDatabase();
+        if(oldBean != null){
+            db.delete(TABLENAME,"phone = ? ",new String[]{bean.getPhone()});
+        }
         ContentValues values = new ContentValues();
         values.put(CurrentUserDB.FriendshipColum.PHONE,bean.getPhone());
         values.put(CurrentUserDB.FriendshipColum.AREA,bean.getArea());
@@ -45,7 +50,7 @@ public class FriendshipDao {
             return null;
         FriendshipBean bean =null;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        Cursor cursor = db.rawQuery("select * from " + TABLENAME + " where friendPhone = ?", new String[]{phone});
+        Cursor cursor = db.rawQuery("select * from " + TABLENAME + " where phone =?", new String[]{phone});
         while (cursor.moveToNext()){
             String phoneNume = cursor.getString(1);
             String nick = cursor.getString(2);
@@ -61,7 +66,7 @@ public class FriendshipDao {
 
     public List<FriendshipBean> findAll (){
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        FriendshipBean bean ;
+        FriendshipBean bean =null;
         List<FriendshipBean> list = new ArrayList<>();
         Cursor cursor = db.rawQuery("select * from " + TABLENAME, null);
         while (cursor.moveToNext()){

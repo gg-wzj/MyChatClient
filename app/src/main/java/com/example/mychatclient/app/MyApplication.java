@@ -9,12 +9,16 @@ import android.content.Context;
 
 public class MyApplication extends Application {
 
-    public static String mHost = "192.168.155.2";
+    public static String mHost = "192.168.1.102";
+
     public static final String MESSAGE_BROADCAST = "com.example.mychatclient.MY_MESSAGE_BROADCAST";
     public static final String VERIFICATION_BROADCAST = "com.example.mychatclient.MY_VERIFICATION_BROADCAST";
     public static final String OK_BROADCAST= "com.example.mychatclient.OK_BROADCAST";
     public static final String REFUSE_BROADCAST= "com.example.mychatclient.REFUSE_BROADCAST";
+
     private static Context mContext;
+
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -32,4 +36,6 @@ public class MyApplication extends Application {
     public static void setHost(String host) {
         mHost = host;
     }
+
+
 }

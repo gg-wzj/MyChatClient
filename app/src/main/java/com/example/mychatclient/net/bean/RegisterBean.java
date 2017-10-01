@@ -58,4 +58,6 @@ public class RegisterBean {
     public void setSex(int sex) {
         this.sex = sex;
     }
+
+
 }

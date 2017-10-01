@@ -1,10 +1,12 @@
 package com.example.mychatclient.net.bean;
 
+import java.io.Serializable;
+
 /**
  * Created by wzj on 2017/9/26.
  */
 
-public class SearchBean {
+public class SearchBean implements Serializable{
 
     String phone;
     String area;

@@ -2,6 +2,7 @@ package com.example.mychatclient.activity;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -18,6 +19,7 @@ import com.example.mychatclient.net.OneTimeConn;
 import com.example.mychatclient.net.bean.RegisterBean;
 import com.example.mychatclient.net.bean.NetBean;
 import com.example.mychatclient.util.SPUtil;
+import com.example.mychatclient.util.StringUtil;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -38,6 +40,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     private boolean[] finishEt = new boolean[3];
     private int currentEt;
     private boolean finish;
+    private String pwd;
 
     @Override
     protected void initView() {
@@ -126,14 +129,14 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         }
         String nick = etNick.getText().toString();
         final String phone = etPhone.getText().toString();
-        final String pwd = etPwd.getText().toString();
-
+        pwd = etPwd.getText().toString();
+        final String md5 = StringUtil.getMd5(pwd);
         final String json ;
         if(nick.length()>10){
             Toast.makeText(this,"昵称长度不能大于10",Toast.LENGTH_SHORT).show();
             return;
         }else{
-            RegisterBean registerBean = new RegisterBean(phone, "中国", nick, pwd, 0);
+            RegisterBean registerBean = new RegisterBean(phone, "中国", nick, md5, 0);
             NetBean<RegisterBean> request = new NetBean<>(TypeConstant.REQUSET_REGISTER,registerBean);
             Gson gson = new Gson();
             json = gson.toJson(request, NetBean.class);
@@ -142,7 +145,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         //向服务器提交注册申请 展示正在注册的progressDialog
         ProgressDialog.Builder builder = new android.app.AlertDialog.Builder(this);
         final android.app.AlertDialog dialog = builder.setMessage("正在申请注册").setCancelable(false).create();
-
+        dialog.show();
         new Thread(new OneTimeConn(json, new OneTimeConn.OnRespondListener() {
             @Override
             public void onSuccess(String respond) {
@@ -182,10 +185,13 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
-                                //点击确定 写入sp 缓存 登录 当有缓存的时候不显示splash界面
-                                SPUtil.putString("user",phone);
-                                SPUtil.putString("pwd",pwd);
-                                Log.e("wzj","sp finish=============\n"+phone);
+
+                                //登录
+                                Intent intent = new Intent(RegisterActivity.this,LoginActivity.class);
+                                intent.putExtra(LoginActivity.USER,phone);
+                                intent.putExtra(LoginActivity.PWD,pwd);
+                                startActivity(intent);
+
                             }
                         })
                         .setNegativeButton("取消", new DialogInterface.OnClickListener() {

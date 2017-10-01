@@ -26,6 +26,7 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ActivityController.addActivity(this);
         init();
         initView();
         setupToolBar();
@@ -82,5 +83,9 @@ public class BaseActivity extends AppCompatActivity {
         return true;
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ActivityController.finish(this);
+    }
 }

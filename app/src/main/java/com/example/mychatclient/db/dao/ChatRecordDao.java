@@ -19,7 +19,6 @@ import java.util.List;
 public class ChatRecordDao {
 
     private  CurrentUserDB dbHelper;
-    private static String mPhone = "12345";
     private static final String TABLENAME = CurrentUserDB.TABLE_CHATRECORD;
     public ChatRecordDao(String name) {
         dbHelper = new CurrentUserDB(MyApplication.getContext(),name);
@@ -82,10 +81,10 @@ public class ChatRecordDao {
         db.close();
     }
 
-    public boolean updateSendStatus(ChatRecordBean bean ){
+    public boolean updateSendStatus(ChatRecordBean bean ,int type){
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(CurrentUserDB.ChatRecordColum.HASSEND,1);
+        values.put(CurrentUserDB.ChatRecordColum.HASSEND,type);
         int update = db.update(TABLENAME, values, "phone = ? and type = ? and message = ? and time = ?",
                 new String[]{bean.getPhone(), bean.getType() + "", bean.getMessage(), bean.getTime() + ""});
         db.close();

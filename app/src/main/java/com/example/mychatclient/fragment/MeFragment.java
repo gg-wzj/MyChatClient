@@ -1,15 +1,26 @@
 package com.example.mychatclient.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.mychatclient.R;
+import com.example.mychatclient.activity.ActivityController;
+import com.example.mychatclient.activity.SplashActivity;
+import com.example.mychatclient.app.MyApplication;
+import com.example.mychatclient.net.bean.SearchBean;
+import com.example.mychatclient.service.ChatService;
 import com.example.mychatclient.util.OptionViewUtil;
+import com.example.mychatclient.util.SPUtil;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +32,7 @@ import java.util.List;
 public class MeFragment extends Fragment implements View.OnClickListener {
 
     private int[] ids = new int[]{
-        R.id.option_money,R.id.option_collection,R.id.option_photo,R.id.option_cardPack,R.id.option_face,R.id.option_setting
+        R.id.option_money,R.id.option_collection,R.id.option_photo,R.id.option_cardPack,R.id.option_face,R.id.option_exit
     };
     private int[] drawableIds = new int[]{
             R.mipmap.ic_wallet_blue1,
@@ -32,13 +43,15 @@ public class MeFragment extends Fragment implements View.OnClickListener {
             R.mipmap.ic_setting_blue
     };
     private String[] optionTexts  = new String[]{
-            "钱包","收藏","相册","卡包","表情","设置"
+            "钱包","收藏","相册","卡包","表情","退出"
     };
     private List<View> optionViews;
 
     private LinearLayout ll_me_money;
     private LinearLayout ll_me_fun;
     private LinearLayout ll_me_setting;
+    private TextView tv_me_nick;
+    private TextView tv_me_phone;
 
     @Nullable
     @Override
@@ -47,6 +60,9 @@ public class MeFragment extends Fragment implements View.OnClickListener {
         ll_me_money = view.findViewById(R.id.ll_me_money);
         ll_me_fun = view.findViewById(R.id.ll_me_fun);
         ll_me_setting = view.findViewById(R.id.ll_me_setting);
+
+        tv_me_nick = view.findViewById(R.id.tv_me_nick);
+        tv_me_phone = view.findViewById(R.id.iv_me_phone);
         return view;
     }
 
@@ -73,10 +89,60 @@ public class MeFragment extends Fragment implements View.OnClickListener {
         for (View optionView : optionViews) {
             optionView.setOnClickListener(this);
         }
+
+        String userInfo = SPUtil.getString("userInfo");
+        SearchBean searchBean = new Gson().fromJson(userInfo, SearchBean.class);
+        tv_me_nick.setText(searchBean.getNick());
+        tv_me_phone.setText("微信号:"+searchBean.getPhone());
     }
 
     @Override
     public void onClick(View v) {
-
+        switch (v.getId()){
+            case R.id.option_exit:
+                showExitDialog();
+                break;
+        }
     }
+
+    private void showExitDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater  = LayoutInflater.from(getActivity());
+        View view = inflater.inflate(R.layout.dialog_exit, null);
+        View ll_exitDialog_app = view.findViewById(R.id.ll_exitDialog_app);
+        View ll_exitDialog_count = view.findViewById(R.id.ll_exitDialog_count);
+        ll_exitDialog_app.setOnClickListener(dialogLisetner);
+        ll_exitDialog_count.setOnClickListener(dialogLisetner);
+        builder.setView(view);
+        AlertDialog exitDialog = builder.create();
+        exitDialog.show();
+    }
+
+    private View.OnClickListener dialogLisetner = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            FragmentActivity activity = getActivity();
+            switch (v.getId()){
+                case R.id.ll_exitDialog_app:
+                    //退出app
+                    ActivityController.finishAll();
+                    break;
+                case R.id.ll_exitDialog_count:
+                    //退出账号
+                    //将user pwd缓存清除
+                    SPUtil.putString("user","");
+                    SPUtil.putString("pwd","");
+                    SPUtil.putBoolean("friendship",false);
+                    ActivityController.finishAll();
+                    Intent intent  = new Intent(MyApplication.getContext(), SplashActivity.class);
+                    startActivity(intent);
+                    break;
+            }
+            //关闭服务
+            Intent intent  = new Intent(activity, ChatService.class);
+            activity.stopService(intent);
+        }
+
+
+    };
 }
